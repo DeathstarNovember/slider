@@ -8,6 +8,7 @@ import {
   useCurrentUserLazyQuery,
   useLoginLazyQuery,
   User,
+  CreateTodoInput,
 } from "./generated/graphql";
 import bcrypt from "bcryptjs";
 import "./App.css";
@@ -110,7 +111,7 @@ const TodoTile: React.FC<TodoTileProps> = ({
           display: "flex",
           flex: 1,
           justifyContent: "space-between",
-          borderColor: theme.colors.secondary,
+          borderColor: theme.colors.highlight,
           borderWidth: 2,
           borderStyle: "solid",
           py: 3,
@@ -160,65 +161,76 @@ const TodoList: React.FC<TodoListProps> = ({
   sortable = false,
 }) => {
   const { sortUp, sortDown } = mutations;
+  const [showSortingControls, setShowSortingControls] = useState(false);
+  const toggleSortingControls = () => {
+    setShowSortingControls(!showSortingControls);
+  };
   return (
-    <div sx={{ display: "flex", flex: 1, justifyContent: "center" }}>
-      <ul
-        sx={{
-          listStyle: "none",
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          p: 0,
-        }}
-      >
-        {todos.map((todo, todoIndex) => (
-          <div sx={{ display: "flex" }} key={`todoTile${todo.nodeId}`}>
-            {sortable ? (
-              <div
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-evenly",
-                }}
-              >
-                {todoIndex > 0 ? (
-                  <IconButton
-                    sx={{
-                      height: 12,
-                      width: 12,
-                      p: 0,
-                      m: 0,
-                    }}
-                    onClick={() => sortUp(todo, todoIndex)}
-                  >
-                    <FaArrowUp />
-                  </IconButton>
-                ) : null}
-                {todoIndex !== todos.length - 1 ? (
-                  <IconButton
-                    sx={{
-                      border: "none",
-                      height: 12,
-                      width: 12,
-                      p: 0,
-                      m: 0,
-                    }}
-                    onClick={() => sortDown(todo, todoIndex)}
-                  >
-                    <FaArrowDown />
-                  </IconButton>
-                ) : null}
-              </div>
-            ) : null}
-            <TodoTile
-              todo={todo}
-              mutations={mutations}
-              currentCategory={currentCategory}
-            />
-          </div>
-        ))}
-      </ul>
-    </div>
+    <React.Fragment>
+      <div sx={{ display: "flex", flex: 1, justifyContent: "center" }}>
+        <ul
+          sx={{
+            listStyle: "none",
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            p: 0,
+          }}
+        >
+          {todos.map((todo, todoIndex) => (
+            <div sx={{ display: "flex" }} key={`todoTile${todo.nodeId}`}>
+              {sortable && showSortingControls ? (
+                <div
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-evenly",
+                  }}
+                >
+                  {todoIndex > 0 ? (
+                    <IconButton
+                      sx={{
+                        height: 12,
+                        width: 12,
+                        p: 0,
+                        m: 0,
+                      }}
+                      onClick={() => sortUp(todo, todoIndex)}
+                    >
+                      <FaArrowUp />
+                    </IconButton>
+                  ) : null}
+                  {todoIndex !== todos.length - 1 ? (
+                    <IconButton
+                      sx={{
+                        border: "none",
+                        height: 12,
+                        width: 12,
+                        p: 0,
+                        m: 0,
+                      }}
+                      onClick={() => sortDown(todo, todoIndex)}
+                    >
+                      <FaArrowDown />
+                    </IconButton>
+                  ) : null}
+                </div>
+              ) : null}
+              <TodoTile
+                todo={todo}
+                mutations={mutations}
+                currentCategory={currentCategory}
+              />
+            </div>
+          ))}
+        </ul>
+      </div>
+      {sortable ? (
+        <div sx={{ cursor: "pointer" }} onClick={toggleSortingControls}>
+          {showSortingControls ? "hide sorting" : "show sorting"}
+        </div>
+      ) : null}
+    </React.Fragment>
   );
 };
 
@@ -233,22 +245,24 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({
   currentCategory,
   setCurrentCategory,
 }) => {
-  const selectCategory = (category: string) => {
-    setCurrentCategory(category);
-  };
   const clearCategory = () => {
     setCurrentCategory(undefined);
   };
+  const selectCategory = (category: string) => {
+    if (category === currentCategory) {
+      clearCategory();
+    }
+    setCurrentCategory(category);
+  };
+  const categoriesForDisplay = ["All", ...categories];
   return (
     <div sx={{ display: "flex", justifyContent: "space-evenly" }}>
-      {categories.map((category, categoryIndex) => (
+      {categoriesForDisplay.map((category, categoryIndex) => (
         <div
           key={`categoryTab${categoryIndex}`}
           sx={{ cursor: "pointer" }}
           onClick={
-            currentCategory === category
-              ? clearCategory
-              : () => selectCategory(category)
+            category === "All" ? clearCategory : () => selectCategory(category)
           }
         >
           <div
@@ -263,6 +277,73 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({
         </div>
       ))}
     </div>
+  );
+};
+
+type TodoFormProps = {
+  createTodo: (input: CreateTodoInput) => void;
+  currentCategory: string | undefined;
+  userId: number;
+  sortOrder: number;
+};
+
+const TodoForm: React.FC<TodoFormProps> = ({
+  createTodo,
+  currentCategory,
+  userId,
+  sortOrder,
+}) => {
+  const [name, setName] = useState<string>("");
+  const [category, setCategory] = useState<string>(currentCategory || "");
+  const newTodoInput = {
+    name,
+    category: currentCategory || category,
+    completed: false,
+    userId,
+    sortOrder,
+  };
+  console.warn({ category });
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.currentTarget.value);
+  };
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCategory(e.currentTarget.value);
+    console.warn({ value: e.currentTarget.value, category });
+  };
+  const clearForm = () => {
+    setName("");
+    setCategory("");
+  };
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    createTodo({ todo: newTodoInput });
+    clearForm();
+  };
+  useEffect(() => {
+    if (currentCategory) {
+      setCategory(currentCategory);
+    } else {
+      setCategory("");
+    }
+  }, [currentCategory]);
+  return (
+    <form sx={{ display: "flex", flex: 1, mt: 5, mb: 0 }}>
+      <input
+        sx={{ display: "flex", flex: 1 }}
+        placeholder="name"
+        value={name}
+        onChange={handleNameChange}
+      />
+      {!currentCategory ? (
+        <input
+          sx={{ display: "flex", flex: 1 }}
+          placeholder="category"
+          value={category}
+          onChange={handleCategoryChange}
+        />
+      ) : null}
+      <button onClick={handleSubmit}>Create</button>
+    </form>
   );
 };
 
@@ -283,6 +364,7 @@ const Dashboard: React.FC<DashboardProps> = ({ currentUser, logout }) => {
   const [currentCategory, setCurrentCategory] = useState<string | undefined>(
     undefined
   );
+  const [showCompletedTodos, setShowCompleted] = useState<boolean>(false);
 
   const filterByCategory = (allTodos: Todo[], category?: string) => {
     return category
@@ -292,6 +374,9 @@ const Dashboard: React.FC<DashboardProps> = ({ currentUser, logout }) => {
 
   const categoryCompleteTodos = filterByCategory(completed, currentCategory);
   const categoryIncompleteTodos = filterByCategory(incomplete, currentCategory);
+  const toggleShowCompleted = () => {
+    setShowCompleted(!showCompletedTodos);
+  };
   return (
     <div sx={{ m: 3 }}>
       <div
@@ -315,17 +400,28 @@ const Dashboard: React.FC<DashboardProps> = ({ currentUser, logout }) => {
         currentCategory={currentCategory}
         setCurrentCategory={setCurrentCategory}
       />
+      <TodoForm
+        createTodo={createTodo}
+        currentCategory={currentCategory}
+        userId={currentUser.id}
+        sortOrder={incomplete.length}
+      />
       <TodoList
         todos={categoryIncompleteTodos}
         mutations={todoMutations}
         currentCategory={currentCategory}
         sortable={true}
       />
-      <TodoList
-        todos={categoryCompleteTodos}
-        mutations={todoMutations}
-        currentCategory={currentCategory}
-      />
+      {showCompletedTodos ? (
+        <TodoList
+          todos={categoryCompleteTodos}
+          mutations={todoMutations}
+          currentCategory={currentCategory}
+        />
+      ) : null}
+      <div sx={{ cursor: "pointer" }} onClick={toggleShowCompleted}>
+        {showCompletedTodos ? "hide completed todos" : "show completed todos"}
+      </div>
     </div>
   );
 };
@@ -359,10 +455,3 @@ const App = () => {
 };
 
 export default App;
-
-type CompProps = {};
-const Comp: React.FC<CompProps> = ({}) => {
-  const [state, setState] = useState(undefined);
-
-  return null;
-};
