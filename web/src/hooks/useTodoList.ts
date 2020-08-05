@@ -1,21 +1,13 @@
 import {
   Todo,
-  TodoUpdateByIdMutation,
-  TodoDeleteMutation,
   User,
   CurrentUserQuery,
   CurrentUserQueryVariables,
-  TodoDeleteMutationVariables,
-  TodoCreateMutation,
   CreateTodoInput,
-  TodoCreateMutationVariables,
-  TodoUpdateByIdMutationVariables,
   useTodoCreateMutation,
   useTodoUpdateByIdMutation,
   useTodoDeleteMutation,
 } from "../generated/graphql";
-import gql from "graphql-tag";
-import { useMutation } from "@apollo/react-hooks";
 import { currentUserQuery } from "../utils/graphql";
 
 export const formatDateForMutation = (date: Date = new Date()) => {
@@ -30,51 +22,6 @@ export const nonNullable = <TValue>(
 ): value is TValue => {
   return value !== null && value !== undefined && !!value["__typename"];
 };
-const createTodoMutation = gql`
-  mutation TodoCreate($input: CreateTodoInput!) {
-    createTodo(input: $input) {
-      todo {
-        id
-        nodeId
-        name
-        category
-        dueDate
-        completed
-        sortOrder
-        userId
-        createdAt
-        updatedAt
-      }
-    }
-  }
-`;
-const deleteTodoByIdMutation = gql`
-  mutation TodoDelete($input: DeleteTodoInput!) {
-    deleteTodo(input: $input) {
-      todo {
-        __typename
-        id
-        nodeId
-      }
-    }
-  }
-`;
-const updateTodoByIdMutation = gql`
-  mutation TodoUpdateById($input: UpdateTodoByIdInput!) {
-    updateTodoById(input: $input) {
-      todo {
-        __typename
-        id
-        nodeId
-        name
-        category
-        dueDate
-        completed
-        sortOrder
-      }
-    }
-  }
-`;
 export const useTodoList = (todos: Todo[], currentUser: User) => {
   const incomplete = sortAscBySortOrder(
     todos.filter((td) => {
