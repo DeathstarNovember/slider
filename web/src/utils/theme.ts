@@ -1,5 +1,6 @@
 export default {
   colors: {
+    input: "hsl(260, 20%, 80%)",
     text: "hsl(210, 50%, 96%)",
     background: "hsl(230, 25%, 18%)",
     primary: "hsl(260, 100%, 80%)",

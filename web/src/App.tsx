@@ -256,24 +256,29 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({
   };
   const categoriesForDisplay = ["All", ...categories];
   return (
-    <div sx={{ display: "flex", justifyContent: "space-evenly" }}>
+    <div
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+      }}
+    >
       {categoriesForDisplay.map((category, categoryIndex) => (
         <div
           key={`categoryTab${categoryIndex}`}
-          sx={{ cursor: "pointer" }}
           onClick={
             category === "All" ? clearCategory : () => selectCategory(category)
           }
+          sx={{
+            cursor: "pointer",
+            flex: 1,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            color:
+              currentCategory === category ? theme.colors.secondary : undefined,
+          }}
         >
-          <div
-            sx={
-              currentCategory === category
-                ? { color: theme.colors.secondary }
-                : undefined
-            }
-          >
-            {category}
-          </div>
+          <div> {category} </div>
         </div>
       ))}
     </div>
@@ -326,23 +331,48 @@ const TodoForm: React.FC<TodoFormProps> = ({
       setCategory("");
     }
   }, [currentCategory]);
+  const disableSubmit = !name || !category;
   return (
     <form sx={{ display: "flex", flex: 1, mt: 5, mb: 0 }}>
       <input
-        sx={{ display: "flex", flex: 1 }}
+        sx={{
+          mr: 3,
+          border: "none",
+          p: 3,
+          backgroundColor: "input",
+          display: "flex",
+          flex: 1,
+        }}
         placeholder="name"
         value={name}
         onChange={handleNameChange}
       />
       {!currentCategory ? (
         <input
-          sx={{ display: "flex", flex: 1 }}
+          sx={{
+            border: "none",
+            p: 3,
+            backgroundColor: "input",
+            display: "flex",
+            flex: 1,
+          }}
           placeholder="category"
           value={category}
           onChange={handleCategoryChange}
         />
       ) : null}
-      <button onClick={handleSubmit}>Create</button>
+      <button
+        sx={{
+          border: "none",
+          background: !disableSubmit ? "background" : "primary",
+          color: "text",
+          ml: 3,
+        }}
+        disabled={disableSubmit}
+        onClick={handleSubmit}
+      >
+        Create
+      </button>
     </form>
   );
 };
