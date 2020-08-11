@@ -1,5 +1,5 @@
 import { Sequelize, DataTypes } from "sequelize";
-import Tally from "./todo";
+import Todo from "./todo";
 const sequelize = new Sequelize("sqlite::memory:");
 
 const User = sequelize.define(
@@ -44,6 +44,6 @@ const User = sequelize.define(
   }
 );
 
-User.hasMany(Tally);
+User.hasMany(Todo);
 
 export default User;

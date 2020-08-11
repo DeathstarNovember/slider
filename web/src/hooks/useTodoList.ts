@@ -9,7 +9,53 @@ import {
   useTodoDeleteMutation,
 } from "../generated/graphql";
 import { currentUserQuery } from "../utils/graphql";
+import gql from "graphql-tag";
 
+export const updateTodoMutation = gql`
+  mutation TodoUpdateById($input: UpdateTodoByIdInput!) {
+    updateTodoById(input: $input) {
+      todo {
+        __typename
+        id
+        nodeId
+        name
+        category
+        dueDate
+        completed
+        sortOrder
+      }
+    }
+  }
+`;
+export const deleteTodoMutation = gql`
+  mutation TodoDelete($input: DeleteTodoInput!) {
+    deleteTodo(input: $input) {
+      todo {
+        __typename
+        id
+        nodeId
+      }
+    }
+  }
+`;
+export const createTodoMutation = gql`
+  mutation TodoCreate($input: CreateTodoInput!) {
+    createTodo(input: $input) {
+      todo {
+        id
+        nodeId
+        name
+        category
+        dueDate
+        completed
+        sortOrder
+        userId
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
 export const formatDateForMutation = (date: Date = new Date()) => {
   return date.toISOString().replace(/T/, " ");
 };
