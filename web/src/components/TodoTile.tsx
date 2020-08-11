@@ -39,9 +39,10 @@ export const TodoTile: React.FC<TodoTileProps> = ({
           borderColor: theme.colors.highlight,
           borderWidth: 2,
           borderStyle: "solid",
-          py: 3,
-          px: 2,
-          my: 1,
+          borderRadius: 6,
+          background: "#3f4973",
+          p: 6,
+          my: 3,
         }}
       >
         <div>

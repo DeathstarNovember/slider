@@ -42,7 +42,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
     setShowCompleted(!showCompletedTodos);
   };
   return (
-    <div sx={{ m: 3 }}>
+    <div sx={{ m: 10 }}>
       <div
         sx={{
           mb: 7,

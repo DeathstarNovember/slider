@@ -39,6 +39,17 @@ const createUserMutation = gql`
   }
 `;
 
+const inputStyles = {
+  my: 2,
+  p: 6,
+  fontSize: 4,
+  borderRadius: 6,
+  background: "#a0a9d1",
+  fontFamily: "body",
+  fontWeight: 300,
+  letterSpacing: 2,
+};
+
 export const Login: React.FC<LoginProps> = ({ setUserLoggedIn }) => {
   const initialLoginFormValues: LoginValues = {
     username: null,
@@ -128,79 +139,106 @@ export const Login: React.FC<LoginProps> = ({ setUserLoggedIn }) => {
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "column",
+        letterSpacing: 2,
       }}
     >
-      {signupFormVisible ? (
-        <React.Fragment>
-          <input
-            sx={{ p: 2, fontSize: 4 }}
-            placeholder="first name"
-            value={firstName || undefined}
-            onChange={setFirstName}
-          />
-          <input
-            sx={{ my: 3, p: 2, fontSize: 4 }}
-            placeholder="last name"
-            value={lastName || undefined}
-            onChange={setLastName}
-          />
-        </React.Fragment>
-      ) : null}
-      <input
-        sx={{ p: 2, fontSize: 4 }}
-        placeholder="username"
-        type="text"
-        value={username || undefined}
-        onChange={setUsername}
-      />
-      <input
-        sx={{ my: 3, p: 2, fontSize: 4 }}
-        placeholder="password"
-        type="password"
-        value={password || undefined}
-        onChange={setPassword}
-      />
-      {!signupFormVisible ? (
-        <div
-          sx={{
-            p: 2,
-            fontSize: 6,
-            fontWeight: 200,
-            color: loginValuesPresent ? "text" : "background",
-            cursor: loginValuesPresent ? "pointer" : "default",
-          }}
-          onClick={handleSubmit}
-        >
-          Login
-        </div>
-      ) : null}
-      {signupFormVisible ? (
-        <div
-          sx={{
-            p: 2,
-            fontSize: 4,
-            fontWeight: 200,
-            color: "text",
-            cursor: "pointer",
-          }}
-          onClick={handleSignup}
-        >
-          Submit
-        </div>
-      ) : (
-        <div
-          sx={{
-            p: 2,
-            fontSize: 4,
-            fontWeight: 200,
-            color: "text",
-            cursor: "pointer",
-          }}
-          onClick={() => setSignupFormVisible(true)}
-        >
-          Sign Up
-        </div>
-      )}
+      <div
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          p: 9,
+          borderRadius: 6,
+          background: "#5e6baa",
+        }}
+      >
+        {signupFormVisible ? (
+          <React.Fragment>
+            <input
+              sx={inputStyles}
+              placeholder="first name"
+              value={firstName || undefined}
+              onChange={setFirstName}
+            />
+            <input
+              sx={inputStyles}
+              placeholder="last name"
+              value={lastName || undefined}
+              onChange={setLastName}
+            />
+          </React.Fragment>
+        ) : null}
+        <input
+          sx={inputStyles}
+          placeholder="username"
+          type="text"
+          value={username || undefined}
+          onChange={setUsername}
+        />
+        <input
+          sx={inputStyles}
+          placeholder="password"
+          type="password"
+          value={password || undefined}
+          onChange={setPassword}
+        />
+        {!signupFormVisible ? (
+          <div
+            sx={{
+              p: 2,
+              fontSize: 6,
+              fontWeight: 200,
+              color: loginValuesPresent ? "text" : "background",
+              cursor: loginValuesPresent ? "pointer" : "default",
+            }}
+            onClick={handleSubmit}
+          >
+            Login
+          </div>
+        ) : null}
+        {signupFormVisible ? (
+          <div>
+            <div
+              sx={{
+                p: 2,
+                fontSize: 4,
+                fontWeight: 200,
+                color: "text",
+                cursor: "pointer",
+              }}
+              onClick={handleSignup}
+            >
+              Submit
+            </div>
+            <div
+              sx={{
+                p: 2,
+                fontSize: 4,
+                fontWeight: 200,
+                color: "text",
+                cursor: "pointer",
+              }}
+              onClick={() => setSignupFormVisible(false)}
+            >
+              Cancel
+            </div>
+          </div>
+        ) : (
+          <div
+            sx={{
+              p: 2,
+              fontSize: 4,
+              fontWeight: 200,
+              color: "text",
+              cursor: "pointer",
+            }}
+            onClick={() => setSignupFormVisible(true)}
+          >
+            Sign Up
+          </div>
+        )}
+      </div>
     </div>
   );
 };
