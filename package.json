@@ -28,8 +28,6 @@
   "author": "DeathstarNovember",
   "license": "MIT",
   "dependencies": {
-    "@reach/router": "^1.3.4",
-    "@types/reach__router": "^1.3.5",
     "express": "^4.17.1"
   }
 }

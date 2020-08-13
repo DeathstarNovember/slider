@@ -6,7 +6,6 @@ import { useCurrentUserLazyQuery } from "./generated/graphql";
 import "./App.css";
 import { Dashboard } from "./components/Dashboard";
 import { Login } from "./components/Login";
-import React from "react";
 import { Router, navigate } from "@reach/router";
 
 const App = () => {
