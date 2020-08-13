@@ -84,6 +84,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           todos={categoryCompleteTodos}
           mutations={todoMutations}
           currentCategory={currentCategory}
+          deleteable={true}
         />
       ) : null}
       <div sx={{ cursor: "pointer" }} onClick={toggleShowCompleted}>

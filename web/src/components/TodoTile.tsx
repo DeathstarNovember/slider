@@ -14,20 +14,25 @@ type TodoTileProps = {
     deleteTodo: (todo: Todo) => void;
   };
   currentCategory: string | undefined;
+  deleteable?: boolean;
 };
 
 export const TodoTile: React.FC<TodoTileProps> = ({
   todo,
   mutations,
   currentCategory,
+  deleteable = false,
 }) => {
-  const { markComplete, markIncomplete } = mutations;
+  const { markComplete, markIncomplete, deleteTodo } = mutations;
   const toggleCompleted = () => {
     if (todo.completed) {
       markIncomplete(todo);
     } else {
       markComplete(todo);
     }
+  };
+  const handleDelete = () => {
+    deleteTodo(todo);
   };
   return (
     <div sx={{ display: "flex", flex: 1 }}>
@@ -49,6 +54,20 @@ export const TodoTile: React.FC<TodoTileProps> = ({
           {currentCategory ? "" : `${todo.category}:`} {todo.name}
         </div>
         <div>
+          {deleteable ? (
+            <button
+              sx={{
+                border: "none",
+                height: 12,
+                width: 12,
+                borderRadius: 3,
+                bg: "primary",
+                p: 0,
+                m: 2,
+              }}
+              onClick={handleDelete}
+            />
+          ) : null}
           <button
             sx={{
               border: "none",

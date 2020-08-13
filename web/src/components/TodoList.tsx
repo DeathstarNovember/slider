@@ -17,6 +17,7 @@ type TodoListProps = {
   };
   currentCategory: string | undefined;
   sortable?: boolean;
+  deleteable?: boolean;
 };
 
 export const TodoList: React.FC<TodoListProps> = ({
@@ -24,6 +25,7 @@ export const TodoList: React.FC<TodoListProps> = ({
   mutations,
   currentCategory,
   sortable = false,
+  deleteable = false,
 }) => {
   const { sortUp, sortDown } = mutations;
   const [showSortingControls, setShowSortingControls] = useState(false);
@@ -85,6 +87,7 @@ export const TodoList: React.FC<TodoListProps> = ({
                 todo={todo}
                 mutations={mutations}
                 currentCategory={currentCategory}
+                deleteable={deleteable}
               />
             </div>
           ))}

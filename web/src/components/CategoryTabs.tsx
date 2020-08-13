@@ -41,7 +41,7 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
             cursor: "pointer",
             flex: 1,
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "center",
             alignItems: "center",
             color:
               currentCategory === category ? theme.colors.secondary : undefined,
