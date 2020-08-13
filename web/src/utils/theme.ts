@@ -10,6 +10,13 @@ export default {
     muted: "hsla(230, 20%, 0%, 20%)",
     gray: "hsl(210, 50%, 60%)",
   },
+  modes: {
+    light: {
+      text: "#000",
+      background: "#fff",
+      primary: "#07c",
+    },
+  },
   fonts: {
     body:
       'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',

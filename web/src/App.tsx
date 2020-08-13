@@ -1,11 +1,13 @@
 /** @jsx jsx */
 import { useState, useEffect } from "react";
-import { jsx } from "theme-ui";
+import { jsx, useColorMode } from "theme-ui";
 import { useApolloClient } from "@apollo/react-hooks";
 import { useCurrentUserLazyQuery } from "./generated/graphql";
 import "./App.css";
 import { Dashboard } from "./components/Dashboard";
 import { Login } from "./components/Login";
+import React from "react";
+import { Router, navigate } from "@reach/router";
 
 const App = () => {
   const client = useApolloClient();
@@ -18,21 +20,25 @@ const App = () => {
     localStorage.clear();
     setUserLoggedIn(null);
   };
+  const [colorMode, setColorMode] = useColorMode();
 
   useEffect(() => {
     if (userLoggedIn) {
       getCurrentUser({ variables: { id: Number(userLoggedIn) } });
     } else {
       client.clearStore();
+      navigate("/login");
     }
-  }, [userLoggedIn]);
+  }, [userLoggedIn, getCurrentUser, client]);
   const currentUser = data?.userById;
-
-  if (currentUser) {
-    return <Dashboard currentUser={currentUser} logout={logout} />;
-  } else {
-    return <Login setUserLoggedIn={setUserLoggedIn} />;
-  }
+  return (
+    <Router>
+      {currentUser ? (
+        <Dashboard path="/" currentUser={currentUser} logout={logout} />
+      ) : null}
+      <Login path="/login" setUserLoggedIn={setUserLoggedIn} />
+    </Router>
+  );
 };
 
 export default App;

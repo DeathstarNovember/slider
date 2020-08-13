@@ -7,8 +7,9 @@ import { useTodoList } from "../hooks/useTodoList";
 import { CategoryTabs } from "./CategoryTabs";
 import { TodoForm } from "./TodoForm";
 import { TodoList } from "./TodoList";
+import { RouteComponentProps } from "@reach/router";
 
-type DashboardProps = {
+type DashboardProps = RouteComponentProps & {
   currentUser: User;
   logout: () => void;
 };

@@ -10,6 +10,7 @@ import {
 import bcrypt from "bcryptjs";
 import { useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
+import { RouteComponentProps, navigate } from "@reach/router";
 
 type LoginValues = {
   username: string | null;
@@ -20,7 +21,7 @@ type SignupValues = {
   lastName: string | null;
 };
 
-type LoginProps = {
+type LoginProps = RouteComponentProps & {
   setUserLoggedIn: (arg0: string) => void;
 };
 
@@ -80,6 +81,7 @@ export const Login: React.FC<LoginProps> = ({ setUserLoggedIn }) => {
         if (match) {
           localStorage.setItem("hash", loginCandidate.id.toString());
           setUserLoggedIn(loginCandidate.id.toString());
+          navigate("/");
         }
         setLoginValues(initialLoginFormValues);
       }
@@ -93,6 +95,7 @@ export const Login: React.FC<LoginProps> = ({ setUserLoggedIn }) => {
     onCompleted: (value) => {
       const newUser = value.createUser?.user;
       login({ variables: { condition: { username } } });
+      navigate("/");
     },
   });
   const setUsername = (e: any) => {
