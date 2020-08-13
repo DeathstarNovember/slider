@@ -3,6 +3,7 @@ import React from "react";
 import { jsx } from "theme-ui";
 import { Todo } from "../generated/graphql";
 import theme from "../utils/theme";
+import { TodoForm } from "./TodoForm";
 
 type TodoTileProps = {
   todo: Todo;
@@ -12,6 +13,7 @@ type TodoTileProps = {
     sortUp: (todo: Todo, todoIndex: number) => void;
     sortDown: (todo: Todo, todoIndex: number) => void;
     deleteTodo: (todo: Todo) => void;
+    updateTodo: (todo: Todo) => void;
   };
   currentCategory: string | undefined;
   deleteable?: boolean;
@@ -23,7 +25,7 @@ export const TodoTile: React.FC<TodoTileProps> = ({
   currentCategory,
   deleteable = false,
 }) => {
-  const { markComplete, markIncomplete, deleteTodo } = mutations;
+  const { markComplete, markIncomplete, deleteTodo, updateTodo } = mutations;
   const toggleCompleted = () => {
     if (todo.completed) {
       markIncomplete(todo);
@@ -68,6 +70,13 @@ export const TodoTile: React.FC<TodoTileProps> = ({
               onClick={handleDelete}
             />
           ) : null}
+          <TodoForm
+            todo={todo}
+            updateTodo={updateTodo}
+            currentCategory={currentCategory}
+            sortOrder={todo.sortOrder}
+            userId={todo.userId}
+          />
           <button
             sx={{
               border: "none",

@@ -1,23 +1,33 @@
 /** @jsx jsx */
 import { jsx } from "theme-ui";
 import React, { useState, useEffect } from "react";
-import { CreateTodoInput } from "../generated/graphql";
+import {
+  CreateTodoInput,
+  Todo,
+  UpdateTodoByIdInput,
+} from "../generated/graphql";
 
 type TodoFormProps = {
-  createTodo: (input: CreateTodoInput) => void;
+  todo?: Todo;
+  createTodo?: (input: CreateTodoInput) => void;
+  updateTodo: (input: Todo) => void;
   currentCategory: string | undefined;
   userId: number;
   sortOrder: number;
 };
 
 export const TodoForm: React.FC<TodoFormProps> = ({
+  todo,
   createTodo,
+  updateTodo,
   currentCategory,
   userId,
   sortOrder,
 }) => {
-  const [name, setName] = useState<string>("");
-  const [category, setCategory] = useState<string>(currentCategory || "");
+  const [name, setName] = useState<string>(todo?.name || "");
+  const [category, setCategory] = useState<string>(
+    todo?.category || currentCategory || ""
+  );
   const newTodoInput = {
     name,
     category: currentCategory || category,
@@ -33,20 +43,34 @@ export const TodoForm: React.FC<TodoFormProps> = ({
     setCategory(e.currentTarget.value);
     console.warn({ value: e.currentTarget.value, category });
   };
-  const clearForm = () => {
+  const clearNameField = () => {
     setName("");
+  };
+  const clearCategoryField = () => {
     setCategory("");
+  };
+  const clearForm = () => {
+    clearNameField();
+    clearCategoryField();
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    createTodo({ todo: newTodoInput });
-    clearForm();
+    if (todo) {
+      updateTodo({ ...todo, name, category });
+    } else if (createTodo) {
+      createTodo({ todo: newTodoInput });
+      if (!currentCategory) {
+        clearForm();
+      } else {
+        clearNameField();
+      }
+    }
   };
   useEffect(() => {
     if (currentCategory) {
       setCategory(currentCategory);
     } else {
-      setCategory("");
+      clearCategoryField();
     }
   }, [currentCategory]);
   const disableSubmit = !name || !category;
@@ -65,7 +89,7 @@ export const TodoForm: React.FC<TodoFormProps> = ({
         value={name}
         onChange={handleNameChange}
       />
-      {!currentCategory ? (
+      {!currentCategory || todo ? (
         <input
           sx={{
             border: "none",

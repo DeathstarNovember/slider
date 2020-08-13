@@ -7,6 +7,7 @@ import {
   useTodoCreateMutation,
   useTodoUpdateByIdMutation,
   useTodoDeleteMutation,
+  UpdateTodoByIdInput,
 } from "../generated/graphql";
 import { currentUserQuery } from "../utils/graphql";
 import gql from "graphql-tag";
@@ -87,6 +88,20 @@ export const useTodoList = (todos: Todo[], currentUser: User) => {
     );
   const [todoCreate] = useTodoCreateMutation();
   const [todoUpdate] = useTodoUpdateByIdMutation();
+  const updateTodo = (todo: Todo) => {
+    const todoVariables = {
+      name: todo.name,
+      category: todo.category,
+      dueDate: todo.dueDate,
+      completed: todo.completed,
+      sortOrder: todo.sortOrder,
+    };
+    const updateVariables: UpdateTodoByIdInput = {
+      id: todo.id,
+      todoPatch: { ...todoVariables },
+    };
+    todoUpdate({ variables: { input: updateVariables } });
+  };
   const [todoDelete] = useTodoDeleteMutation({
     update: (cache, result) => {
       try {
@@ -228,6 +243,7 @@ export const useTodoList = (todos: Todo[], currentUser: User) => {
     markIncomplete,
     sortUp,
     sortDown,
+    updateTodo,
     deleteTodo,
     createTodo,
   };
