@@ -29,6 +29,7 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
       sx={{
         display: "flex",
         justifyContent: "space-between",
+        mb: 5,
       }}
     >
       {categoriesForDisplay.map((category, categoryIndex) => (

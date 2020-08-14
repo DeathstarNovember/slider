@@ -1,14 +1,8 @@
 /** @jsx jsx */
 import { jsx } from "theme-ui";
 import React, { useState } from "react";
-import {
-  useLoginLazyQuery,
-  useCreateUserMutation,
-  CreateUserInput,
-  UserInput,
-} from "../generated/graphql";
+import { useLoginLazyQuery, useCreateUserMutation } from "../generated/graphql";
 import bcrypt from "bcryptjs";
-import { useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import { RouteComponentProps, navigate } from "@reach/router";
 
@@ -25,7 +19,7 @@ type LoginProps = RouteComponentProps & {
   setUserLoggedIn: (arg0: string) => void;
 };
 
-const createUserMutation = gql`
+export const createUserMutation = gql`
   mutation CreateUser($input: CreateUserInput!) {
     createUser(input: $input) {
       user {
@@ -92,8 +86,7 @@ export const Login: React.FC<LoginProps> = ({ setUserLoggedIn }) => {
     },
   });
   const [createUser] = useCreateUserMutation({
-    onCompleted: (value) => {
-      const newUser = value.createUser?.user;
+    onCompleted: () => {
       login({ variables: { condition: { username } } });
       navigate("/");
     },

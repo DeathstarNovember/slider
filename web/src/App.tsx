@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { useState, useEffect } from "react";
-import { jsx, useColorMode } from "theme-ui";
+import { jsx } from "theme-ui";
 import { useApolloClient } from "@apollo/react-hooks";
 import { useCurrentUserLazyQuery } from "./generated/graphql";
 import "./App.css";
@@ -19,7 +19,6 @@ const App = () => {
     localStorage.clear();
     setUserLoggedIn(null);
   };
-  const [colorMode, setColorMode] = useColorMode();
 
   useEffect(() => {
     if (userLoggedIn) {
