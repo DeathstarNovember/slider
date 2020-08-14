@@ -26,7 +26,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
     createTodo,
     ...todoMutations
   } = useTodoList(todos, currentUser);
-  const { updateTodo } = todoMutations;
   const [currentCategory, setCurrentCategory] = useState<string | undefined>(
     undefined
   );
@@ -70,7 +69,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
       />
       <TodoForm
         createTodo={createTodo}
-        updateTodo={updateTodo}
         currentCategory={currentCategory}
         userId={currentUser.id}
         sortOrder={incomplete.length}

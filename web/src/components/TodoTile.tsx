@@ -1,9 +1,10 @@
 /** @jsx jsx */
-import React from "react";
+import React, { useState } from "react";
 import { jsx } from "theme-ui";
 import { Todo } from "../generated/graphql";
 import theme from "../utils/theme";
 import { TodoForm } from "./TodoForm";
+import { FaEdit, FaRecycle, FaCheck, FaTimes } from "react-icons/fa";
 
 type TodoTileProps = {
   todo: Todo;
@@ -18,6 +19,10 @@ type TodoTileProps = {
   currentCategory: string | undefined;
   deleteable?: boolean;
 };
+const iconStyles = {
+  padding: 3,
+  margin: 3,
+};
 
 export const TodoTile: React.FC<TodoTileProps> = ({
   todo,
@@ -25,6 +30,7 @@ export const TodoTile: React.FC<TodoTileProps> = ({
   currentCategory,
   deleteable = false,
 }) => {
+  const [formVisible, setFormVisible] = useState(false);
   const { markComplete, markIncomplete, deleteTodo, updateTodo } = mutations;
   const toggleCompleted = () => {
     if (todo.completed) {
@@ -35,6 +41,12 @@ export const TodoTile: React.FC<TodoTileProps> = ({
   };
   const handleDelete = () => {
     deleteTodo(todo);
+  };
+  const revealForm = () => {
+    setFormVisible(true);
+  };
+  const hideForm = () => {
+    setFormVisible(false);
   };
   return (
     <div sx={{ display: "flex", flex: 1 }}>
@@ -52,43 +64,34 @@ export const TodoTile: React.FC<TodoTileProps> = ({
           my: 3,
         }}
       >
-        <div>
-          {currentCategory ? "" : `${todo.category}:`} {todo.name}
-        </div>
+        {!formVisible ? (
+          <div>
+            {currentCategory ? "" : `${todo.category}:`} {todo.name}
+          </div>
+        ) : null}
         <div>
           {deleteable ? (
-            <button
-              sx={{
-                border: "none",
-                height: 12,
-                width: 12,
-                borderRadius: 3,
-                bg: "primary",
-                p: 0,
-                m: 2,
-              }}
-              onClick={handleDelete}
-            />
+            <FaTimes style={iconStyles} onClick={handleDelete} />
           ) : null}
-          <TodoForm
-            todo={todo}
-            updateTodo={updateTodo}
-            currentCategory={currentCategory}
-            sortOrder={todo.sortOrder}
-            userId={todo.userId}
-          />
-          <button
-            sx={{
-              border: "none",
-              height: 12,
-              width: 12,
-              borderRadius: 3,
-              bg: todo.completed ? "green" : "red",
-              p: 0,
-              m: 0,
-            }}
-            onClick={toggleCompleted}
-          />
+          {formVisible ? (
+            <TodoForm
+              todo={todo}
+              updateTodo={updateTodo}
+              currentCategory={currentCategory}
+              sortOrder={todo.sortOrder}
+              userId={todo.userId}
+              cancel={hideForm}
+            />
+          ) : (
+            <React.Fragment>
+              <FaEdit style={iconStyles} onClick={revealForm} />
+              {todo.completed ? (
+                <FaRecycle style={iconStyles} onClick={toggleCompleted} />
+              ) : (
+                <FaCheck style={iconStyles} onClick={toggleCompleted} />
+              )}
+            </React.Fragment>
+          )}
         </div>
       </li>
     </div>
